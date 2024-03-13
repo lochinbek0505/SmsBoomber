@@ -6,7 +6,7 @@
     <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
-<string name="handbook">\t\t\t\t\tУшбу мобил дастуридан фойдаланиш қоидалари.\n
+    <string name="handbook">\t\t\t\t\tУшбу мобил дастуридан фойдаланиш қоидалари.\n
 \n
 \n1.Еxcel дастурида А устунда телефон рақам (990000000) тўлдириш.(1 та excel файлда 250 та телефон рақамдан ошириш мумкин эмас) B устундан 7 устунгача матнлар,  дастур ушбу матнларни жамлаб А устундаги рақамларга смс  юборади.
 \n2. Дастур эрталабки 7:00 дан кечки 19:00 гача ишлайди.

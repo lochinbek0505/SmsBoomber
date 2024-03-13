@@ -1,5 +1,6 @@
 package com.example.smsboomber
 
+import DatabaseHandler
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.PendingIntent
@@ -66,9 +67,9 @@ class MainActivity : AppCompatActivity() {
     private val SMS_PERMISSION_REQUEST_CODE = 101
     var savedUsername = ""
     var savedPassport = ""
-    var saveduid=""
+    var saveduid = ""
     var uploadFile = false
-
+    lateinit var db: DatabaseHandler
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -79,8 +80,8 @@ class MainActivity : AppCompatActivity() {
 
         savedUsername = sharedPreferences.getString(KEY_NAME, "").toString()
         savedPassport = sharedPreferences.getString(KEY_NAME2, "").toString()
-        saveduid=sharedPreferences.getString("uuid","").toString()
-
+        saveduid = sharedPreferences.getString("uuid", "").toString()
+        db = DatabaseHandler(this)
         postDataUsingRetrofit(this@MainActivity, savedUsername, savedPassport)
 //        binding.tvLeftDays.text=saveduid
         if (postDataUsingRetrofit(this@MainActivity, savedUsername, savedPassport)) {
@@ -246,7 +247,7 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         val retrofitAPI = retrofit.create(RetrofitAPI::class.java)
-        val dataModel = DataModel(saveduid,number, password, getCurrentHour().toString(),"main")
+        val dataModel = DataModel(saveduid, number, password, getCurrentHour().toString(), "main")
         val call: Call<login_respons?>? = retrofitAPI.login(dataModel)
 
         call!!.enqueue(object : Callback<login_respons?> {
@@ -305,7 +306,7 @@ class MainActivity : AppCompatActivity() {
                 null
             )
 //            1 та 997621000 рақамига смс юборилди
-            Toast.makeText(this, "$i - sms yuborildi", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "$i - SMS  $number raqamiga yuborildi.", Toast.LENGTH_LONG).show()
 
         } else {
 
@@ -318,7 +319,7 @@ class MainActivity : AppCompatActivity() {
                 null,
                 null
             )
-            Toast.makeText(this, "$i - sms yuborildi", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "$i - SMS  $number raqamiga yuborildi.", Toast.LENGTH_LONG).show()
 
         }
 
@@ -576,7 +577,7 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         val retrofitAPI = retrofit.create(RetrofitAPI::class.java)
-        val dataModel = logout_request(number,saveduid)
+        val dataModel = logout_request(number, saveduid)
         val call: Call<login_respons?>? = retrofitAPI.loguot(dataModel)
 
         call!!.enqueue(object : Callback<login_respons?> {
@@ -624,6 +625,7 @@ class MainActivity : AppCompatActivity() {
                 item.phones.forEach { ii ->
 
                     sendSms(ii, item.message!!, i)
+                    db.addMessage(ii, item.message, i.toString())
 
 
 
