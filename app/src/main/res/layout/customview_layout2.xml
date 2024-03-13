@@ -1,5 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:background="@color/white"
     android:layout_height="wrap_content">
 
     <LinearLayout
@@ -9,26 +10,54 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <RelativeLayout
             android:layout_height="wrap_content"
-            android:text="Internetga ulanmagansiz! Iltimos ulanib , yana harakat qilib ko'ring!"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold"
-            android:layout_marginBottom="20dp"
-            android:textSize="18sp" />
+            android:layout_width="match_parent">
 
 
-        <com.google.android.material.button.MaterialButton
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/cl2_pd"/>
 
-            android:id="@+id/dialogDismiss_button"
-            android:layout_width="250dp"
-            android:layout_height="match_parent"
-            android:layout_margin="10dp"
-            android:text="Qayta harakat qilish"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SMS lar yuborilmoqda ..."
+                android:layout_centerInParent="true"
+                android:layout_centerVertical="true"
+                android:textSize="16sp"
+                android:textColor="@color/black"/>
 
-            />
+        </RelativeLayout>
 
+
+
+
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            android:gravity="center">
+
+
+            <ImageView
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:id="@+id/iv_cl2"
+                android:layout_marginEnd="100dp"
+                android:src="@drawable/ic_pause"/>
+
+          <com.google.android.material.button.MaterialButton
+              android:id="@+id/btn_history_cl2"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="Tarix"
+              android:layout_alignParentEnd="true"/>
+
+
+        </LinearLayout>
     </LinearLayout>
 
 </RelativeLayout>

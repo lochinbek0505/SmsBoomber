@@ -1,4 +1,4 @@
-package com.example.smsboomber
+package com.example.smsboomber.model
 
 data class login_respons(
 

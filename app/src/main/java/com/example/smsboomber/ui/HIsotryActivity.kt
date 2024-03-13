@@ -1,9 +1,10 @@
-package com.example.smsboomber
+package com.example.smsboomber.ui
 
-import DatabaseHandler
+import com.example.smsboomber.uitilts.DatabaseHandler
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.example.smsboomber.R
 
 class HIsotryActivity : AppCompatActivity() {
 

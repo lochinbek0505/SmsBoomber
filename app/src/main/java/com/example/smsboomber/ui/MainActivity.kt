@@ -1,10 +1,8 @@
-package com.example.smsboomber
+package com.example.smsboomber.ui
 
-import DatabaseHandler
+import com.example.smsboomber.uitilts.DatabaseHandler
 import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.app.PendingIntent
-import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -16,11 +14,8 @@ import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.provider.OpenableColumns
 import android.telephony.SmsManager
-import android.telephony.TelephonyManager
 import android.util.Log
 import android.view.Gravity
 import android.view.View
@@ -28,6 +23,7 @@ import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -36,11 +32,20 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.example.smsboomber.R
+import com.example.smsboomber.uitilts.RetrofitAPI
 import com.example.smsboomber.databinding.ActivityMainBinding
+import com.example.smsboomber.model.DataModel
+import com.example.smsboomber.model.data_model
+import com.example.smsboomber.model.login_respons
+import com.example.smsboomber.model.logout_request
+import com.example.smsboomber.model.phonedata_model
+import com.example.smsboomber.model.respons_data
 import com.google.firebase.Firebase
 import com.google.firebase.storage.storage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import retrofit2.Call
@@ -69,6 +74,7 @@ class MainActivity : AppCompatActivity() {
     var savedPassport = ""
     var saveduid = ""
     var uploadFile = false
+    var coroutineJob: Job? = null
     lateinit var db: DatabaseHandler
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -512,6 +518,39 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    fun sendSmsDialog() {
+
+
+        val builder = AlertDialog.Builder(this, R.style.CustomAlertDialog)
+            .create()
+        val view = layoutInflater.inflate(R.layout.customview_layout2, null)
+        builder.setView(view)
+
+        val history = view.findViewById<Button>(R.id.btn_history_cl2)
+        val pause = view.findViewById<ImageView>(R.id.iv_cl2)
+
+        pause.setOnClickListener {
+
+            coroutineJob?.cancel()
+
+
+        }
+
+        history.setOnClickListener {
+
+            startActivity(Intent(this, HIsotryActivity::class.java))
+
+
+        }
+
+        builder.setCanceledOnTouchOutside(false)
+        builder.show()
+
+        AlertDialog.Builder(this, R.style.CustomAlertDialog)
+
+
+    }
+
 
     private fun postDataUsingRetrofit(
 
@@ -528,8 +567,9 @@ class MainActivity : AppCompatActivity() {
         val retrofitAPI = retrofit.create(RetrofitAPI::class.java)
         val dataModel = respons_data(number, password, file, getCurrentHour().toString())
         val call: Call<data_model?>? = retrofitAPI.parseExs(dataModel)
-        setProgressDialogSMS("SMSlar yuborilmoqda ...")
+//        setProgressDialogSMS("SMSlar yuborilmoqda ...")
 
+        sendSmsDialog()
         call!!.enqueue(object : Callback<data_model?> {
             override fun onResponse(call: Call<data_model?>?, response: Response<data_model?>) {
 
@@ -614,7 +654,7 @@ class MainActivity : AppCompatActivity() {
     fun sendSms2(data: ArrayList<phonedata_model>) {
 
 
-        CoroutineScope(Dispatchers.Main).launch {
+        coroutineJob = CoroutineScope(Dispatchers.Main).launch {
 
             var i = 1
 
@@ -633,7 +673,7 @@ class MainActivity : AppCompatActivity() {
 
                 }
 
-                delay(30000) // Delay for 1 second (1000 milliseconds)
+                delay(300) // Delay for 1 second (1000 milliseconds)
 
             }
 

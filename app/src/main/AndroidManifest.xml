@@ -26,22 +26,14 @@
         android:theme="@style/Theme.SMSboomber"
         tools:targetApi="31">
         <activity
-            android:name=".HIsotryActivity"
-            android:exported="true" >
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
+            android:name=".ui.HIsotryActivity"
+            android:exported="false" />
 
         <activity
-            android:name=".MainActivity2"
+            android:name=".ui.MainActivity2"
             android:exported="false" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".ui.LoginActivity"
             android:exported="true"
             android:theme="@style/Theme.SMSboomber">
             <intent-filter>
@@ -51,7 +43,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.MainActivity"
             android:exported="false" />
     </application>
 

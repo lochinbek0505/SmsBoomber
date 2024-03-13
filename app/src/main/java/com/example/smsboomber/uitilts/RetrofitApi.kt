@@ -1,9 +1,12 @@
-package com.example.smsboomber
+package com.example.smsboomber.uitilts
+import com.example.smsboomber.model.DataModel
+import com.example.smsboomber.model.data_model
+import com.example.smsboomber.model.login_respons
+import com.example.smsboomber.model.logout_request
+import com.example.smsboomber.model.respons_data
 import retrofit2.Call
 import retrofit2.http.Body
-import retrofit2.http.GET
 import retrofit2.http.POST
-import retrofit2.http.PUT
 
 interface RetrofitAPI {
 
