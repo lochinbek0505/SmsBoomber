@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "68233406833",
+    "project_id": "smsboomber-fbcb4",
+    "storage_bucket": "smsboomber-fbcb4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:68233406833:android:c8400e30148e1327096ed0",
+        "android_client_info": {
+          "package_name": "com.example.smsboomber"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBpfboD3oWush3wf70rEmjXg2YJIh0kZMs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
