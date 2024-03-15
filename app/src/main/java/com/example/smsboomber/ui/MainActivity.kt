@@ -32,15 +32,19 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 import com.example.smsboomber.R
 import com.example.smsboomber.uitilts.RetrofitAPI
 import com.example.smsboomber.databinding.ActivityMainBinding
 import com.example.smsboomber.model.DataModel
+import com.example.smsboomber.model.Message
 import com.example.smsboomber.model.data_model
 import com.example.smsboomber.model.login_respons
 import com.example.smsboomber.model.logout_request
+import com.example.smsboomber.model.phone_model
 import com.example.smsboomber.model.phonedata_model
 import com.example.smsboomber.model.respons_data
+import com.example.smsboomber.uitilts.CatecoriesAdapter
 import com.google.firebase.Firebase
 import com.google.firebase.storage.storage
 import kotlinx.coroutines.CoroutineScope
@@ -48,6 +52,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -69,6 +74,9 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var dialog: AlertDialog
     private lateinit var dialogSMS: AlertDialog
+    private lateinit var dialogSMS2: AlertDialog
+
+    lateinit var dataList:MutableList<phone_model>
     private val SMS_PERMISSION_REQUEST_CODE = 101
     var savedUsername = ""
     var savedPassport = ""
@@ -107,7 +115,11 @@ class MainActivity : AppCompatActivity() {
 
         }
 
+        binding.exit.setOnClickListener {
 
+            finishAffinity()
+
+        }
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.SEND_SMS)
             != PackageManager.PERMISSION_GRANTED
         ) {
@@ -124,15 +136,21 @@ class MainActivity : AppCompatActivity() {
             checker()
         }
 
+        binding.tvHistory.setOnClickListener {
+
+            historyDialog()
+
+        }
 
         binding.sendFile.setOnClickListener {
 
             val galleryIntent = Intent(Intent.ACTION_PICK)
-
+            binding.exit.visibility = View.INVISIBLE
             galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
 //
             galleryIntent.setType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             startActivityForResult(galleryIntent, 1);
+            db.deleteAllMessages()
 
             imagePickerActivityResult.launch(galleryIntent)
 
@@ -204,17 +222,15 @@ class MainActivity : AppCompatActivity() {
                 val uploadTask = storageRef.child("file/$name").putFile(imageUri!!)
 
                 uploadTask.addOnSuccessListener {
-
                     Toast.makeText(this, "Fayl yuklandi!!! ", Toast.LENGTH_LONG).show()
                     storageRef.child("file/$name").downloadUrl.addOnSuccessListener {
-
 
                         postDataUsingRetrofit(this, savedUsername, savedPassport, it.toString())
 
 
                     }
 
-                    dialog.cancel()
+//                    dialog.cancel()
                     uploadFile = true
 
                 }.addOnFailureListener {
@@ -312,7 +328,7 @@ class MainActivity : AppCompatActivity() {
                 null
             )
 //            1 та 997621000 рақамига смс юборилди
-            Toast.makeText(this, "$i - SMS  $number raqamiga yuborildi.", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "$i - SMS  $number raqamiga (SMS) yuborildi.", Toast.LENGTH_LONG).show()
 
         } else {
 
@@ -518,28 +534,111 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    fun historyDialog() {
+
+
+        val builder = AlertDialog.Builder(this, R.style.CustomAlertDialog)
+            .create()
+        val view = layoutInflater.inflate(R.layout.customview_layout3, null)
+        builder.setView(view)
+
+        val history = view.findViewById<RecyclerView>(R.id.recycler3)
+        val back = view.findViewById<ImageView>(R.id.iv_back)
+
+        back.setOnClickListener {
+
+            builder.cancel()
+
+        }
+
+
+        val dd = db.getAllMessages()
+        val adapter = CatecoriesAdapter(dd, object : CatecoriesAdapter.ItemSetOnClickListener {
+            override fun onClick(data: Message) {
+
+//                sendSms(data.number,data.message,data.messageIndex.toInt())
+                sendSms(data.number, data.message, data.messageIndex.toInt())
+
+            }
+
+
+        })
+
+        history.adapter = adapter
+
+
+//        history.setOnClickListener {
+//
+//            startActivity(Intent(this, HIsotryActivity::class.java))
+//
+//
+//        }
+
+        builder.setCanceledOnTouchOutside(false)
+        builder.show()
+
+        AlertDialog.Builder(this, R.style.CustomAlertDialog)
+
+
+    }
+
     fun sendSmsDialog() {
 
 
         val builder = AlertDialog.Builder(this, R.style.CustomAlertDialog)
             .create()
+        dialogSMS2 = builder
         val view = layoutInflater.inflate(R.layout.customview_layout2, null)
         builder.setView(view)
 
         val history = view.findViewById<Button>(R.id.btn_history_cl2)
         val pause = view.findViewById<ImageView>(R.id.iv_cl2)
+        val progressBar=view.findViewById<ProgressBar>(R.id.cl2_pd)
+        val message=view.findViewById<TextView>(R.id.tv_message_cl2)
+        val back=view.findViewById<TextView>(R.id.tv_cancel)
 
+
+        back.setOnClickListener {
+
+
+            coroutineJob!!.cancel()
+
+            binding.exit.visibility = View.VISIBLE
+            binding.sendFile.visibility = View.VISIBLE
+            dialogSMS2.cancel()
+        }
+        var check = true
         pause.setOnClickListener {
 
-            coroutineJob?.cancel()
+            if (check) {
+                coroutineJob?.cancel()
+                pause.setImageResource(R.drawable.ic_play)
+                Log.e("HomeFragmenttt",dataList.toString())
+                progressBar.visibility=View.INVISIBLE
+                message.text="SMS yuborilishi to'xtatilgan"
+                check = false
+            } else {
+                val index=dataList.get(0).index
+                val list= mutableListOf<phone_model>()
+
+                progressBar.visibility=View.VISIBLE
+                message.text="SMS lar yuborilmoqda ..."
+                    list.add(phone_model(dataList.get(0).list,index))
+
+
+                sendSms2(list)
+                pause.setImageResource(R.drawable.ic_pause)
+                check = true
+                Log.e("HomeFragmenttt",dataList.toString())
+
+            }
 
 
         }
 
         history.setOnClickListener {
 
-            startActivity(Intent(this, HIsotryActivity::class.java))
-
+            historyDialog()
 
         }
 
@@ -569,7 +668,8 @@ class MainActivity : AppCompatActivity() {
         val call: Call<data_model?>? = retrofitAPI.parseExs(dataModel)
 //        setProgressDialogSMS("SMSlar yuborilmoqda ...")
 
-        sendSmsDialog()
+        dialog.cancel()
+
         call!!.enqueue(object : Callback<data_model?> {
             override fun onResponse(call: Call<data_model?>?, response: Response<data_model?>) {
 
@@ -577,7 +677,15 @@ class MainActivity : AppCompatActivity() {
 //                startActivity(Intent(this@LoginActivity, MainActivity::class.java))
 
                 try {
-                    sendSms2(response.body()!!.data)
+                    val data = response.body()!!.data
+                    sendSmsDialog()
+//                    yourClassInstance.sendSms2(data, this@MainActivity)
+                    val mm= mutableListOf<phone_model>()
+                    mm.add(phone_model(data,1))
+                    Log.e("HomeAAA",data.toString())
+
+                    sendSms2(mm)
+
 
                 } catch (t: Exception) {
 
@@ -586,7 +694,8 @@ class MainActivity : AppCompatActivity() {
                         "Iltimos to'g'ri file yuboring",
                         Toast.LENGTH_LONG
                     ).show()
-                    dialogSMS.cancel()
+                    Log.e("HomeAAA",t.message.toString())
+                    dialogSMS2.cancel()
                     binding.sendFile.visibility = View.VISIBLE
 
                 }
@@ -651,40 +760,44 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    fun sendSms2(data: ArrayList<phonedata_model>) {
-
+    fun sendSms2(data: MutableList<phone_model>){
+        dataList = data
 
         coroutineJob = CoroutineScope(Dispatchers.Main).launch {
 
-            var i = 1
+            try {
+                for (item in dataList.get(0).list.toList()) {
+                    item.phones.forEach { ii ->
+                        // Check if the coroutine is still active before sending the SMS
+                        if (isActive) {
+                            sendSms(ii, item.message!!, dataList.get(0).index)
+                            db.addMessage(ii, item.message, dataList.get(0).index.toString())
+                            dataList.get(0).index++
+                        } else {
+                            // Handle the case where coroutine is cancelled
+                            return@launch
+                        }
+                    }
+                    dataList.get(0).list.remove(item)
 
-
-            val list = data
-            for (item in list) {
-
-                item.phones.forEach { ii ->
-
-                    sendSms(ii, item.message!!, i)
-                    db.addMessage(ii, item.message, i.toString())
-
-
-
-                    i++
-
+                    delay(30000) // Delay for 3 seconds
                 }
+                Toast.makeText(
+                    this@MainActivity,
+                    "Hamma SMS lar yuborilib bo'lindi",
+                    Toast.LENGTH_LONG
+                ).show()
+                binding.exit.visibility = View.VISIBLE
+                binding.sendFile.visibility = View.VISIBLE
 
-                delay(300) // Delay for 1 second (1000 milliseconds)
+//                dialogSMS2.cancel()
+            } catch (e: CancellationException) {
 
+
+                println("Coroutine cancelled")
             }
-
-
-
-            i = 0
-
-            dialogSMS.cancel()
-            binding.sendFile.visibility = View.VISIBLE
-
         }
 
     }
+
 }

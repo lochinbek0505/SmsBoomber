@@ -5,9 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#1E2447"
-    tools:context=".ui.LoginActivity">
+    tools:context=".ui.MainActivity">
 
     <RelativeLayout
+        android:id="@+id/rl_am"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="#0F153E"
@@ -35,6 +36,21 @@
     </RelativeLayout>
 
 
+    <TextView
+        android:id="@+id/tv_history"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background"
+        android:text="TARIX"
+        android:layout_below="@id/rl_am"
+        android:layout_margin="15dp"
+        android:textColor="@color/white"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"/>
+
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/send_file"
         android:layout_width="200dp"
@@ -43,7 +59,17 @@
         android:backgroundTint="#7E57C2"
         android:padding="15dp"
         android:text="FAYL YUKLASH" />
-
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/exit"
+        android:layout_below="@id/send_file"
+        android:layout_width="200dp"
+        android:layout_marginTop="40dp"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:backgroundTint="#7E57C2"
+        android:padding="15dp"
+        android:visibility="gone"
+        android:text="Ilovadan chiqish" />
     <!--    <com.google.android.material.button.MaterialButton-->
     <!--        android:id="@+id/send"-->
     <!--        android:layout_width="200dp"-->

@@ -12,9 +12,7 @@ import com.example.smsboomber.model.Message
 
 class CatecoriesAdapter(
     var items: ArrayList<Message>,
-    var listener: ItemSetOnClickListener,
-    var context: Context
-) :
+    var listener: ItemSetOnClickListener) :
     RecyclerView.Adapter<CatecoriesAdapter.Holder>() {
 
     interface ItemSetOnClickListener {

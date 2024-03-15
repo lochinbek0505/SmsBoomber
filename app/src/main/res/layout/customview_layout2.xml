@@ -6,7 +6,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="30dp"
+        android:layout_margin="20dp"
         android:gravity="center"
         android:orientation="vertical">
 
@@ -21,6 +21,7 @@
                 android:id="@+id/cl2_pd"/>
 
             <TextView
+                android:id="@+id/tv_message_cl2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="SMS lar yuborilmoqda ..."
@@ -34,18 +35,18 @@
 
 
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:layout_marginTop="10dp"
-            android:gravity="center">
+            android:layout_marginTop="15dp"
+            >
 
 
             <ImageView
-                android:layout_width="35dp"
-                android:layout_height="35dp"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
                 android:id="@+id/iv_cl2"
+                android:layout_centerVertical="true"
                 android:layout_marginEnd="100dp"
                 android:src="@drawable/ic_pause"/>
 
@@ -54,10 +55,24 @@
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:text="Tarix"
+              android:textSize="20sp"
+              android:padding="5dp"
+              android:layout_centerVertical="true"
               android:layout_alignParentEnd="true"/>
 
 
-        </LinearLayout>
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SMS yuborishni bekor qilish."
+            android:layout_marginTop="20dp"
+            android:textSize="19sp"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="#0B27D5"
+            android:id="@+id/tv_cancel"/>
+
     </LinearLayout>
 
 </RelativeLayout>

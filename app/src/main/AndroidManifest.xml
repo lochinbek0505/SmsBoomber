@@ -27,7 +27,10 @@
         tools:targetApi="31">
         <activity
             android:name=".ui.HIsotryActivity"
-            android:exported="false" />
+            android:exported="true" >
+
+
+        </activity>
 
         <activity
             android:name=".ui.MainActivity2"
@@ -36,6 +39,7 @@
             android:name=".ui.LoginActivity"
             android:exported="true"
             android:theme="@style/Theme.SMSboomber">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
